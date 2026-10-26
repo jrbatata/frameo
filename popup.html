@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <title>Frameo</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <svg class="symbols" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <symbol id="icon-original" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><rect x="8" y="8" width="8" height="8" rx="1"/></symbol>
+        <symbol id="icon-cover" viewBox="0 0 24 24"><path d="M9 4H4v5m11-5h5v5M4 15v5h5m11-5v5h-5"/><path d="m4 4 5 5m11-5-5 5M4 20l5-5m11 5-5-5"/></symbol>
+        <symbol id="icon-stretch" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M6 12h12m-9-3-3 3 3 3m6-6 3 3-3 3"/></symbol>
+        <symbol id="icon-width" viewBox="0 0 24 24"><path d="M3 5v14M21 5v14M6 12h12m-9-3-3 3 3 3m6-6 3 3-3 3"/></symbol>
+        <symbol id="icon-height" viewBox="0 0 24 24"><path d="M5 3h14M5 21h14M12 6v12m-3-9 3-3 3 3m-6 6 3 3 3-3"/></symbol>
+        <symbol id="icon-refresh" viewBox="0 0 24 24"><path d="M20 7v5h-5m4.5-1a8 8 0 1 0-2 6M20 12l-3-5"/></symbol>
+        <symbol id="icon-pip" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="3"/><rect x="12" y="11" width="7" height="6" rx="1"/><path d="m6 8 3 3M6 11h3V8"/></symbol>
+        <symbol id="icon-play" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="4"/><path d="m10 9 5 3-5 3Z"/></symbol>
+    </svg>
+
+    <main>
+        <header class="header">
+            <img class="app-icon" src="icon.svg" width="25" height="25" alt="">
+            <h1>Frameo</h1>
+            <div class="header-actions">
+                <span id="pipTip" class="tooltip-target" data-tooltip="Procurando um vídeo nesta aba…" tabindex="0">
+                <button id="togglePip" class="icon-button" type="button" aria-pressed="false" aria-describedby="pipHint" disabled>
+                    <svg aria-hidden="true"><use href="#icon-pip"/></svg>
+                    <span id="pipLabel" class="sr-only">Vídeo flutuante</span>
+                </button>
+                </span>
+                <span class="header-divider" aria-hidden="true"></span>
+                <label id="activationTip" class="switch" data-tooltip="Ativar ou desativar o Frameo">
+                    <input type="checkbox" id="toggleActive" role="switch" aria-label="Ativar ajustes de vídeo" aria-describedby="activationStatus" checked disabled>
+                    <span class="switch-track" aria-hidden="true"></span>
+                    <span id="activationStatus" class="sr-only">Ativado</span>
+                </label>
+            </div>
+        </header>
+        <p id="pipHint" class="pip-hint" role="status" aria-live="polite"></p>
+
+        <section id="emptyState" class="empty-state" aria-labelledby="emptyTitle" aria-describedby="emptyDescription" aria-busy="true">
+            <span class="empty-icon"><svg aria-hidden="true"><use href="#icon-play"/></svg><span class="empty-spark" aria-hidden="true">✦</span></span>
+            <h2 id="emptyTitle">Procurando seu vídeo…</h2>
+            <p id="emptyDescription">Só um instante enquanto verificamos esta aba.</p>
+            <span id="checkVideoTip" class="tooltip-target" data-tooltip="Aguarde enquanto verificamos esta aba."><button id="checkVideo" class="empty-button" type="button" disabled>Verificar novamente</button></span>
+            <p class="empty-note">Seus ajustes ficam salvos para o próximo vídeo.</p>
+        </section>
+
+        <div id="videoSettings" hidden>
+        <fieldset id="modeFieldset" class="modes" disabled>
+            <legend>Enquadramento</legend>
+            <div class="mode-list">
+                <label class="mode-option" data-mode="original" data-tooltip="Mantém o formato do player">
+                    <input type="radio" name="mode" value="original">
+                    <svg class="mode-icon" aria-hidden="true"><use href="#icon-original"/></svg>
+                    <span class="mode-title">Original</span>
+                </label>
+                <label class="mode-option" data-mode="cover" data-tooltip="Amplia e corta as bordas">
+                    <input type="radio" name="mode" value="cover" checked>
+                    <svg class="mode-icon" aria-hidden="true"><use href="#icon-cover"/></svg>
+                    <span class="mode-title">Tela cheia</span>
+                </label>
+                <label class="mode-option" data-mode="stretch" data-tooltip="Estica para ocupar o player">
+                    <input type="radio" name="mode" value="stretch">
+                    <svg class="mode-icon" aria-hidden="true"><use href="#icon-stretch"/></svg>
+                    <span class="mode-title">Estendida</span>
+                </label>
+                <label class="mode-option" data-mode="width" data-tooltip="Ajusta às bordas laterais">
+                    <input type="radio" name="mode" value="width">
+                    <svg class="mode-icon" aria-hidden="true"><use href="#icon-width"/></svg>
+                    <span class="mode-title">Preencher<br>largura</span>
+                </label>
+                <label class="mode-option" data-mode="height" data-tooltip="Ajusta ao topo e à base">
+                    <input type="radio" name="mode" value="height">
+                    <svg class="mode-icon" aria-hidden="true"><use href="#icon-height"/></svg>
+                    <span class="mode-title">Preencher<br>altura</span>
+                </label>
+            </div>
+            <p id="modeDescription" class="mode-description">Amplia e corta as bordas</p>
+        </fieldset>
+
+        <section id="speedTip" class="speed-card card" aria-labelledby="speedLabel" data-tooltip="Ajusta a velocidade, inclusive no vídeo flutuante.">
+            <div class="speed-header">
+                <label id="speedLabel" for="playbackSpeed">Velocidade</label>
+                <output id="speedValue" for="playbackSpeed">1×</output>
+            </div>
+            <input id="playbackSpeed" type="range" min="0.5" max="2" step="0.25" value="1" aria-valuetext="1 vez, velocidade normal" disabled>
+            <div class="speed-ticks" aria-hidden="true">
+                <span data-speed="0.5">0,5×</span>
+                <span data-speed="0.75">0,75×</span>
+                <span data-speed="1" class="is-selected">1×</span>
+                <span data-speed="1.25">1,25×</span>
+                <span data-speed="1.5">1,5×</span>
+                <span data-speed="1.75">1,75×</span>
+                <span data-speed="2">2×</span>
+            </div>
+        </section>
+        </div>
+
+        <footer>
+            <p id="status" role="status" aria-live="polite">As alterações são aplicadas automaticamente.</p>
+            <span id="refreshTip" class="tooltip-target" data-tooltip="Reaplicar os ajustes ao vídeo" tabindex="0"><button id="refresh" class="icon-button" type="button" aria-label="Reaplicar ajuste" disabled><svg aria-hidden="true"><use href="#icon-refresh"/></svg></button></span>
+        </footer>
+    </main>
+    <div id="tooltip" class="tooltip" role="tooltip" hidden></div>
+    <script src="pip.js"></script>
+    <script src="popup.js"></script>
+    <script src="tooltips.js"></script>
+</body>
+</html>
